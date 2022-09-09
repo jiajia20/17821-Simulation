@@ -1,1 +1,1 @@
-This is the garbage can model 
+This is the garbage can model coding practice 
