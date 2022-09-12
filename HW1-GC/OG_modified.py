@@ -45,17 +45,40 @@ A_matrix[2] = A2  # diagonal
 decision structure,  by m array with 1 for yes, 0 for no
 mapping of chocies to decision makers -> the decision structure
 '''
+## ading new decision structure 
+## D3 - core pheripheral
+## D4 - team of teams
+
 D0 = np.ones((v, m))  # decision structure
 D1 = np.zeros((v, m))
 D2 = np.zeros((v, m))
+D3 = np.zeros((v, m))
+D4 = np.zeros((v, m))
+
 for a2 in np.arange(v):
     D1[a2, a2:m] = 1
     D2[a2, a2] = 1
 
-D_matrix = np.zeros((3, v, m))
+## D3 - core pheripheral
+for a3 in np.arange(int(v/2)):
+    D3[a3, :]=1
+
+for a4 in np.arange(int(v/2),v):
+    D3[a4, a4]=1
+
+## D4 - team of teams
+for a5 in np.arange(0,v,2):
+    D4[a5,a5] = 1
+    D4[a5,a5+1] = 1
+    D4[a5+1,a5] = 1
+    D4[a5+1,a5+1] = 1
+
+D_matrix = np.zeros((5, v, m))
 D_matrix[0] = D0  # full
 D_matrix[1] = D1  # triangular
 D_matrix[2] = D2  # diagonal
+D_matrix[3] = D3  # core pheripheral
+D_matrix[4] = D4  # team of teams
 
 # Energy distribution among members,v vector
 E0 = np.arange(0.1, 1.1, 0.1)*sol_coeff
@@ -181,10 +204,12 @@ Output = np.zeros((81, 4 + 14))  # to capture the results, 4 for markers
 count_1 = 0
 
 # SIMULATION
-for x1 in np.arange(3):  # Net energy dist: 1.1, 2.2, 3.3
+for x1 in np.arange(1):  # ONly one Net energy dist: 1.1. no 2.2, 3.3
     for x2 in np.arange(3):  # Energy dist: increasing, equall, decreasing
         for x3 in np.arange(3):  # problem access A: all, triangular, diagonal
-            for x4 in np.arange(3):  # D: choices to dec. mkrs: all, tri, diag
+            # % option for D, adding core pheriperial and team of teams
+            for x4 in np.arange(5):  # D: choices to dec. mkrs: all, tri, diag, core
+                
                 Resolutions = np.zeros(iterations)  # to capture the data
                 Oversights = np.zeros(iterations)
                 Flights = np.zeros(iterations)
@@ -203,7 +228,7 @@ for x1 in np.arange(3):  # Net energy dist: 1.1, 2.2, 3.3
                 nel = Net_energy_load[x1]
                 E = Energy[x2]
                 A = A_matrix[x3]
-                D = D_matrix[x4]
+                D = D_matrix[x4]  # now there's 5 option for matrix4
 
                 for i101 in np.arange(iterations):
                     '''
@@ -399,7 +424,7 @@ for x1 in np.arange(3):  # Net energy dist: 1.1, 2.2, 3.3
 
                 count_1 = count_1 + 1
 
-file_name = 'garbage_can_v_40.xls'
+file_name = 'garbage_can_v_41.xls'
 
 wbk = xlwt.Workbook()
 sheet1 = wbk.add_sheet('sheet1')
