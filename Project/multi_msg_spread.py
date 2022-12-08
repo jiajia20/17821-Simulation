@@ -89,25 +89,25 @@ def singe_agent_spread(network,agent_dict, agent, alpha = alpha, omega = omega):
         threshold = 2*SE + SL - (0*DE + DL) 
         flip_thresold =  (0*DE + DL) - (2*SE + SL)
     
-    print('agent',agent.index ,'threshold:', threshold, ', flip:', flip_thresold)
+    # print('agent',agent.index ,'threshold:', threshold, ', flip:', flip_thresold)
     if threshold > alpha and len(agent.associated_msg)>0:
-        print('spread')
+        # print('spread')
         for msg  in agent.associated_msg:
             #spread only new fresh msg that have the samce stance
             if msg.freshness > 0 and msg.stance == agent.stance:
-                print('msg ' + str(msg.index) + ' frensh and spreading')
+                # print('msg ' + str(msg.index) + ' frensh and spreading')
                 for j in neighbors:
                     msg_receiver = agent_dict[j]
-                    print(j, msg_receiver) 
+                    # print(j, msg_receiver) 
                     if j > 1:
                     #type(agent_dict[j]) == type(agent): 
                         """ THIS IS WIRED PROBLEM """
-                        print(' to agent ' + str(msg_receiver.index))
+                        # print(' to agent ' + str(msg_receiver.index))
                         agent_dict[j].get_msg(msg)
                         
 
     if flip_thresold > omega:
-        print('flip')
+        # print('flip')
         agent.stance_flip()
 
 ### Additional function, age msg and purge msg to avoid excess msg ############
@@ -200,9 +200,12 @@ def time_step(G, agent_dict,msg_list, msg_index, manuver_pct_E, df_stance, df_ms
     news_generate(G,agent_dict, msg_list, news_agent_index = 0, message_index = msg_index, manuver = stance_news_0, stance = 1)
     news_generate(G,agent_dict, msg_list, news_agent_index = 1, message_index = msg_index, manuver = stance_news_1, stance = -1)
 
+    order_l = [n for n in range(len(agent_dict))]
+    rd.shuffle(order_l) 
+    
     #then make agent spread the news
-    for i in agent_dict:
-        if i>1:
+    for i in order_l:
+        if (i !=0) and (i != 1):
             singe_agent_spread(G, agent_dict, agent_dict[i])
 
     #age the msg and purge agent associated msg list
@@ -211,4 +214,3 @@ def time_step(G, agent_dict,msg_list, msg_index, manuver_pct_E, df_stance, df_ms
 
     #take snapshot
     update_df(agent_dict, df_stance, df_msg)
-
